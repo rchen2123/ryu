@@ -101,7 +101,7 @@ class ShortestForwarding(app_manager.RyuApp):
         parser = datapath.ofproto_parser
 
         pkt = packet.Packet(msg.data)
-        eth = pkt.get_protocols(ethernet.ethernet)
+        eth = pkt.get_protocol(ethernet.ethernet)
         in_port = msg.match["in_port"]
 
         # get out_port
