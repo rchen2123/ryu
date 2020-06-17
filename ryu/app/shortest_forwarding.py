@@ -96,12 +96,12 @@ class ShortestForwarding(app_manager.RyuApp):
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
     def packet_in_handler(self, ev):
         msg = ev.msg
-        datapath = ev.msg.datapath
+        datapath = msg.datapath
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
 
         pkt = packet.Packet(msg.data)
-        eth = pkt.get_protocols(ethernet.ethernet)
+        eth = pkt.get_protocols(ethernet.ethernet)[0]
         in_port = msg.match["in_port"]
 
         # get out_port
