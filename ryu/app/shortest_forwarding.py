@@ -16,7 +16,7 @@ class ShortestForwarding(app_manager.RyuApp):
     def __init__(self, *args, **kwargs):
         super(ShortestForwarding, self).__init__(*args, **kwargs)
         self.network = nx.DiGraph()
-        self.topology_api_app = self.app
+        self.topology_api_app = self
         self.paths = {}
 
     # handle switch features info
@@ -28,7 +28,7 @@ class ShortestForwarding(app_manager.RyuApp):
 
         # install a table_miss flow entry for each datapath
         match = parser.OFPMatch()
-        actions = [parser.OFPActionOutput(ofproto.OFP_CONTRLOOER,
+        actions = [parser.OFPActionOutput(ofproto.OFPP_CONTROLLER,
                                           ofproto.OFPCML_NO_BUFFER)]
 
         # install flow entry
@@ -53,8 +53,8 @@ class ShortestForwarding(app_manager.RyuApp):
     @set_ev_cls(event.EventSwitchEnter, [CONFIG_DISPATCHER, MAIN_DISPATCHER])
     def get_topology(self, ev):
         # get nodes
-        switch_list = get_switch(self.get_topology_api_app, None)
-        switches = [switch.db.id for switch in switch_list]
+        switch_list = get_switch(self.topology_api_app, None)
+        switches = [switch.dp.id for switch in switch_list]
         self.network.add_nodes_from(switches)
 
         # get links
@@ -73,7 +73,6 @@ class ShortestForwarding(app_manager.RyuApp):
         # add links between host and switches
         if src not in self.network:
             self.network.add_node(src)
-            self.network.add_edge(dpid, src, {'port': in_port})
             self.network.add_edge(src, dpid)
             self.paths.setdefault(src, {})
 
