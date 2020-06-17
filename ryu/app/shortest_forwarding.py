@@ -74,7 +74,7 @@ class ShortestForwarding(app_manager.RyuApp):
         if src not in self.network:
             self.network.add_node(src)
             self.network.add_edge(src, dpid)
-            self.network.add_edge(dpid, src, {'port': in_port})
+            self.network.add_edge(dpid, src, attr_dict={'port': in_port})
             self.paths.setdefault(src, {})
 
         # search dst's shortest path
