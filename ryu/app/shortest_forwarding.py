@@ -40,13 +40,13 @@ class ShortestForwarding(app_manager.RyuApp):
 
         inst = [parser.OFPInstructionActions(ofproto.OFPIT_APPLY_ACTIONS,
                                              actions)]
-        if buffer_id:
-            mod = parser.OFPFlowMod(datapath=datapath, buffer_id=buffer_id,
-                                    priority=priority, match=match,
-                                    instructions=inst)
-        else:
-            mod = parser.OFPFlowMod(datapath=datapath, priority=priority,
-                                    match=match, instructions=inst)
+        # if buffer_id:
+        #     mod = parser.OFPFlowMod(datapath=datapath, buffer_id=buffer_id,
+        #                             priority=priority, match=match,
+        #                             instructions=inst)
+        # else:
+        mod = parser.OFPFlowMod(datapath=datapath, priority=priority,
+                                match=match, instructions=inst)
         datapath.send_msg(mod)
 
     # get topoloty and store it into networkx object
@@ -79,7 +79,7 @@ class ShortestForwarding(app_manager.RyuApp):
 
         # search dst's shortest path
         if dst in self.network:
-            if dst in self.paths[src]:
+            if dst not in self.paths[src]:
                 path = nx.shortest_path(self.network, src, dst)
                 self.paths[src][dst] = path
 
