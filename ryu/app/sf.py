@@ -108,7 +108,7 @@ class MyShortestForwarding(app_manager.RyuApp):
                  link_list]  # add edge, need src,dst,weigtht
         self.network.add_edges_from(links)
 
-        links = [(link.dst.dpid, link.src.dpid, {'attr_dict': {'port': link.dst.port_no}}) for link in link_list]
+        links = [(link.dst.dpid, link.src.dpid, {'attr_dict': {'port': link.src.port_no}}) for link in link_list]
         self.network.add_edges_from(links)
 
     def get_out_port(self, datapath, src, dst, in_port):
