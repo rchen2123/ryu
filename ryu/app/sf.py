@@ -34,7 +34,8 @@ class MyShortestForwarding(app_manager.RyuApp):
         ofproto = datapath.ofproto
         ofp_parser = datapath.ofproto_parser
 
-        match = ofp_parser.OFPMatch()  # for all packet first arrive, match it successful, send it ro controller
+        # for all packet first arrive, match it successful, send it ro controller
+        match = ofp_parser.OFPMatch()
         actions = [ofp_parser.OFPActionOutput(
             ofproto.OFPP_CONTROLLER, ofproto.OFPCML_NO_BUFFER
         )]
@@ -89,8 +90,10 @@ class MyShortestForwarding(app_manager.RyuApp):
 
         datapath.send_msg(out)
 
+    # event is not from openflow protocol, is come from switchs` state changed,
+    # just like: link to controller at the first time or send packet to controller
     @set_ev_cls(event.EventSwitchEnter, [CONFIG_DISPATCHER,
-                                         MAIN_DISPATCHER])  # event is not from openflow protocol, is come from switchs` state changed, just like: link to controller at the first time or send packet to controller
+                                         MAIN_DISPATCHER])
     def get_topology(self, ev):
         '''
         get network topo construction, save info in the dict
@@ -104,11 +107,11 @@ class MyShortestForwarding(app_manager.RyuApp):
         # store links info into the Graph
         link_list = get_link(self.topology_api_app, None)
         # port_no, in_port    ---------------need to debug, get diffirent from  both
-        links = [(link.src.dpid, link.dst.dpid, {'attr_dict': {'port': link.dst.port_no}}) for link in
+        links = [(link.src.dpid, link.dst.dpid, {'port': link.dst.port_no}) for link in
                  link_list]  # add edge, need src,dst,weigtht
         self.network.add_edges_from(links)
 
-        links = [(link.dst.dpid, link.src.dpid, {'attr_dict': {'port': link.src.port_no}}) for link in link_list]
+        links = [(link.dst.dpid, link.src.dpid, {'port': link.src.port_no}) for link in link_list]
         self.network.add_edges_from(links)
 
     def get_out_port(self, datapath, src, dst, in_port):
@@ -136,7 +139,7 @@ class MyShortestForwarding(app_manager.RyuApp):
             next_hop = path[path.index(dpid) + 1]
             # print("1ooooooooooooooooooo")
             # print(self.network[dpid][next_hop])
-            out_port = self.network[dpid][next_hop]['attr_dict']['port']
+            out_port = self.network[dpid][next_hop]['port']
             # print("2ooooooooooooooooooo")
             # print(out_port)
 
@@ -144,6 +147,8 @@ class MyShortestForwarding(app_manager.RyuApp):
             # print("6666666666 find dst")
             print(path)
         else:
-            out_port = datapath.ofproto.OFPP_FLOOD  # By flood, to find dst, when dst get packet, dst will send a new back,the graph will record dst info
+            # By flood, to find dst, when dst get packet,
+            # dst will send a new back,the graph will record dst info
+            out_port = datapath.ofproto.OFPP_FLOOD
             # print("8888888888 not find dst")
         return out_port

@@ -34,7 +34,7 @@ class ShortestForwarding(app_manager.RyuApp):
         # install flow entry
         self.add_flow(datapath, 0, match, actions)
 
-    def add_flow(self, datapath, priority, match, actions, buffer_id=None):
+    def add_flow(self, datapath, priority, match, actions):
         ofproto = datapath.ofproto
         parser = datapath.ofproto_parser
 
@@ -114,5 +114,5 @@ class ShortestForwarding(app_manager.RyuApp):
             self.add_flow(datapath, 1, match, actions)
 
         out = parser.OFPPacketOut(datapath=datapath, buffer_id=msg.buffer_id,
-                                  in_port=in_port, actions=actions)
+                                  in_port=in_port, actions=actions, data=msg.data)
         datapath.send_msg(out)
