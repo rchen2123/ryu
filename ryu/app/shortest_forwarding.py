@@ -90,7 +90,7 @@ class ShortestForwarding(app_manager.RyuApp):
             path = self.paths[src][dst]
             next_hop = path[path.index(dpid) + 1]
             out_port = self.network[dpid][next_hop]['port']
-            print('path: ' + path)
+            print('path: ', path)
         else:
             out_port = datapath.ofproto.OFPP_FLOOD
 
