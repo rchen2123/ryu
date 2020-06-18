@@ -74,7 +74,7 @@ class ShortestForwarding(app_manager.RyuApp):
         if src not in self.network:
             self.network.add_node(src)
             self.network.add_edge(src, dpid)
-            self.network.add_edge(dpid, src, attr_dict={'port': in_port})
+            self.network.add_edge(dpid, src, port=in_port)
             self.paths.setdefault(src, {})
 
         # search dst's shortest path
@@ -86,7 +86,7 @@ class ShortestForwarding(app_manager.RyuApp):
             path = self.paths[src][dst]
             next_hop = path[path.index(dpid) + 1]
             out_port = self.network[dpid][next_hop]['port']
-            print("path: ", path)
+            print(path)
         else:
             out_port = datapath.ofproto.OFPP_FLOOD
 
