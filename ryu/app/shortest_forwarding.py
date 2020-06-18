@@ -80,13 +80,17 @@ class ShortestForwarding(app_manager.RyuApp):
         # search dst's shortest path
         if dst in self.network:
             if dst not in self.paths[src]:
-                path = nx.shortest_path(self.network, src, dst)
+                try:
+                    path = nx.shortest_path(self.network, src, dst)
+                    print(path)
+                except nx.NetworkXNoPath:
+                    print('No path')
                 self.paths[src][dst] = path
 
             path = self.paths[src][dst]
             next_hop = path[path.index(dpid) + 1]
             out_port = self.network[dpid][next_hop]['port']
-            print(path)
+            print('path: ' + path)
         else:
             out_port = datapath.ofproto.OFPP_FLOOD
 
