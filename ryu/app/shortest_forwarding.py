@@ -80,11 +80,11 @@ class ShortestForwarding(app_manager.RyuApp):
         # search dst's shortest path
         if dst in self.network:
             if dst not in self.paths[src]:
-                try:
-                    path = nx.shortest_path(self.network, src, dst)
-                    print(path)
-                except nx.NetworkXNoPath:
-                    print('No path')
+                # try:
+                path = nx.shortest_path(self.network, src, dst)
+                #     print(path)
+                # except nx.NetworkXNoPath:
+                #     print('No path')
                 self.paths[src][dst] = path
 
             path = self.paths[src][dst]
