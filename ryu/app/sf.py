@@ -126,7 +126,7 @@ class MyShortestForwarding(app_manager.RyuApp):
         if src not in self.network:
             self.network.add_node(src)
             attr_dict = {'port': in_port}
-            self.network.add_edge(dpid, src, attr_dict)
+            self.network.add_edge(dpid, src, attr_dict={'port': in_port})
             self.network.add_edge(src, dpid)
             self.paths.setdefault(src, {})
 
@@ -140,7 +140,7 @@ class MyShortestForwarding(app_manager.RyuApp):
             next_hop = path[path.index(dpid) + 1]
             # print("1ooooooooooooooooooo")
             # print(self.network[dpid][next_hop])
-            out_port = self.network[dpid][next_hop]['port']
+            out_port = self.network[dpid][next_hop]['attr_dict']['port']
             # print("2ooooooooooooooooooo")
             # print(out_port)
 
