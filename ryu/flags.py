@@ -24,6 +24,12 @@ from ryu import cfg
 CONF = cfg.CONF
 
 CONF.register_cli_opts([
+    # k_shortest_forwarding
+    cfg.IntOpt('k-paths', default=1, help='number for k shortest paths'),
+    cfg.StrOpt('weight', default='hop',
+               help='weight type of computing shortest path.')])
+
+CONF.register_cli_opts([
     # tests/switch/tester
     cfg.StrOpt('target', default='0000000000000001', help='target sw dp-id'),
     cfg.StrOpt('tester', default='0000000000000002', help='tester sw dp-id'),
